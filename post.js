@@ -1,4 +1,3 @@
-const fs = require("fs");
 const { TwitterApi } = require("twitter-api-v2");
 
 const client = new TwitterApi({
@@ -9,20 +8,8 @@ const client = new TwitterApi({
 });
 
 async function main() {
-  const imagePath = "./image.png";
-
-  if (!fs.existsSync(imagePath)) {
-    throw new Error("image.png was not found in the repository root.");
-  }
-
-  const mediaId = await client.v1.uploadMedia(imagePath);
-
-  await client.v2.tweet({
-    text: "Hi",
-    media: { media_ids: [mediaId] },
-  });
-
-  console.log("Posted: Hi + image.png");
+  await client.v2.tweet({ text: "Hi" });
+  console.log("Text-only test succeeded!");
 }
 
 main().catch((error) => {
