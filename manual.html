@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily X Post Helper</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101114;color:#f5f5f5}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px}
+main{width:min(100%,520px);background:#1a1c21;border:1px solid #30343b;border-radius:20px;padding:22px}
+h1{font-size:1.4rem;margin:0 0 8px}p{color:#b6bbc5;line-height:1.5}
+label{display:block;margin:18px 0 8px;font-weight:650}
+input,textarea,button{font:inherit;width:100%;border-radius:12px}
+textarea{background:#101216;color:white;border:1px solid #414650;padding:12px;min-height:90px;resize:vertical}
+input[type=file]{padding:12px;background:#101216;border:1px dashed #555d69;color:#ddd}
+img{display:none;width:100%;max-height:360px;object-fit:contain;background:#101216;border-radius:12px;margin-top:14px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+button{border:0;padding:13px 10px;font-weight:700;cursor:pointer;background:#e7e9ee;color:#111}
+button.secondary{background:#303640;color:#fff}
+small{display:block;color:#9da4b0;margin-top:14px;line-height:1.45}
+</style>
+</head>
+<body>
+<main>
+<h1>Daily X Post Helper</h1>
+<p>Prepare your hourly post without sharing login cookies or API credentials.</p>
+<label for="postText">Post text</label>
+<textarea id="postText">Hi</textarea>
+<label for="imageFile">Choose image</label>
+<input id="imageFile" type="file" accept="image/*">
+<img id="preview" alt="Selected image preview">
+<div class="actions">
+<button id="copyText" type="button">Copy text</button>
+<button id="downloadImage" class="secondary" type="button">Save image</button>
+</div>
+<button id="openX" type="button" style="margin-top:10px">Open X composer</button>
+<small>On iPad: choose your image, tap Save image, then Open X composer. In X, attach the saved image from Photos or Files and tap Post. This helper does not read cookies or post automatically.</small>
+</main>
+<script>
+const fileInput=document.getElementById('imageFile');
+const preview=document.getElementById('preview');
+let selectedFile=null;
+fileInput.addEventListener('change',()=>{
+  selectedFile=fileInput.files&&fileInput.files[0]||null;
+  if(!selectedFile){preview.removeAttribute('src');preview.style.display='none';return;}
+  preview.src=URL.createObjectURL(selectedFile);
+  preview.style.display='block';
+});
+document.getElementById('copyText').addEventListener('click',async()=>{
+  const text=document.getElementById('postText').value;
+  try{await navigator.clipboard.writeText(text);alert('Post text copied.');}
+  catch{alert('Clipboard access was blocked. Select the text and copy it manually.');}
+});
+document.getElementById('downloadImage').addEventListener('click',()=>{
+  if(!selectedFile){alert('Choose an image first.');return;}
+  const url=URL.createObjectURL(selectedFile);
+  const a=document.createElement('a');a.href=url;a.download=selectedFile.name||'image.png';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+document.getElementById('openX').addEventListener('click',()=>{
+  const text=document.getElementById('postText').value;
+  window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank','noopener');
+});
+</script>
+</body>
+</html>
