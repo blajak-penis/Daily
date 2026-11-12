@@ -1,0 +1,8 @@
+{
+  "name": "daily-x-poster",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "twitter-api-v2": "^1.27.0"
+  }
+}
